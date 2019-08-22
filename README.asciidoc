@@ -2,11 +2,7 @@
 
 This repository contains a short demo how to use OpenShift 4 User Identity Provider.
 
-A short video about the demo might be found here:
-
-++++
-<iframe width="1078" height="480" src="https://www.youtube.com/embed/SZPDLuOr3ig" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-++++
+A short video about the demo might be found here https://www.youtube.com/watch?v=SZPDLuOr3ig
 
 == The Demo architecture
 
