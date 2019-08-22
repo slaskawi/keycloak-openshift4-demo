@@ -14,7 +14,7 @@ deploy-keycloak: create-project
 
 deploy-front:
 	$(OC_CMD) new-app --docker-image=slaskawi/quarkus-front
-	$(OC_CMD) import-image quarkus-front --confirm
+	#$(OC_CMD) import-image quarkus-front --confirm
 	$(OC_CMD) expose svc/quarkus-front
 
 deploy-oauth-client:
