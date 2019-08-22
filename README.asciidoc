@@ -1,0 +1,67 @@
+= OpenShift 4 User Provider Demo
+
+This repository contains a short demo how to use OpenShift 4 User Identity Provider.
+
+== The Demo architecture
+
+The demo consists of:
+- Keycloak server deployed from an OpenShift Template
+- A Quarkus frontend playground
+- OAuthClient definition that needs to be put into OpenShift
+
+== Preparation steps
+
+=== Building a custom Keycloak image
+
+If you'd like to build a custom Docker image with OpenShift 4 Identity provider, please follow the steps below:
+
+* Clone https://github.com/jboss-dockerfiles/keycloak/tree/master
+* Go to the `server` directory
+* Invoke a build: `docker build --build-arg GIT_REPO=slaskawi/keycloak --build-arg GIT_BRANCH=KEYCLOAK-10169-OpenShift4-User-Provider -t slaskawi/keycloak-openshift-4-full .` Note that you will probably need to change the prefix name from `slaskawi` to something else.
+* Push the image to Quay or DockerHub
+
+As for this demo, we'll use my image with all changes (those from container and Keycloak repository) combined together: `docker.io/slaskawi/keycloak-openshift-4:latest`.
+
+=== Building Quarkus front containers
+
+This step has been automated: `make build-native push-dockerhub`.
+
+NOTE: In order to make this demo super-simple, I decided to hardcode Keycloak url into `keycloak.json` configuration file.
+      This way, you can see where the address needs to be put.
+
+As for this demo, we'll use my image: `slaskawi/quarkus-front`.
+
+=== Obtaining OpenShift API URL
+
+In most of the cases, the API url is known. However, in some complicated deployments, the API url may differ from user-facing url. In this case, you need to obtain the API url by using:
+
+```
+curl -s -k -H "Authorization: Bearer $(oc whoami -t)" https://api.cluster-lipniki-e986.lipniki-e986.openshiftworkshop.com:6443/apis/config.openshift.io/v1/infrastructures/cluster | jq ".status.apiServerURL"
+"https://api.cluster-lipniki-e986.lipniki-e986.openshiftworkshop.com:6443"
+```
+
+== The Demo
+
+Below is a list of steps that need to be done to run this demo. I'm assuming, you have a running environment (I have been using RHPDS):
+
+* Create a new Project - `myproject`
+* Deploy Keycloak using the following command: `oc new-app -p NAMESPACE=$(_TEST_PROJECT) -p KEYCLOAK_USER=admin -p KEYCLOAK_PASSWORD=admin -f keycloak-https.json`
+* Deploy Quarkus Front using the following commands:
+** Deploy the app - `oc new-app --docker-image=slaskawi/quarkus-front`
+** (Optional) Refresh the image - `$(OC_CMD) import-image quarkus-front --confirm`
+** Expose it - `$(OC_CMD) expose svc/quarkus-front`
+* Update the `oauth-client.json` file (and correct Keycloak's address if necessary) and deploy it - `oc create -f oauth-client.json`
+* Log into Keycloak Admin Console and import a realm. Pick `realm-export.json` file.
+* Navigate into Quarkus Front and check if everything works and you can:
+** Log into the application using a newly created user in Keycloak
+** Log into the application using OpenShift 4 integration (there's a separate button in the login screen for that)
+
+== Screenshots
+
+Here are a few screenshots, showing you how the configuration looks like and how to login:
+
+image::img/keycloak-configuration.png[Keycloak Configuration]
+
+image::img/quarkus-front-login.png[Quarkus front login screen]
+
+image::img/tokens.png[Tokens]

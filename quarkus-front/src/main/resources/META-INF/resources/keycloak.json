@@ -1,0 +1,8 @@
+{
+  "realm": "quarkus-quickstart",
+  "auth-server-url": "http://keycloak-myproject.apps.cluster-lipniki-e986.lipniki-e986.openshiftworkshop.com/auth/",
+  "ssl-required": "external",
+  "resource": "quarkus-front",
+  "public-client": true,
+  "confidential-port": 0
+}

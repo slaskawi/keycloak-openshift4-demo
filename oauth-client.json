@@ -1,0 +1,12 @@
+{
+  "kind": "OAuthClient",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "keycloak-broker"
+  },
+  "secret": "45e27750-a8aa-11e4-b2ea-3c970e4b7ffe",
+  "redirectURIs": [
+    "http://keycloak-myproject.apps.cluster-lipniki-e986.lipniki-e986.openshiftworkshop.com/auth/realms/quarkus-quickstart/broker/openshift-v4/endpoint"
+  ],
+  "grantMethod": "prompt"
+}
